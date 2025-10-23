@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyCarbon – Green News</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0B132B;
+      --accent-green: #7DF9A0;
+      --text-light: #E0E0E0;
+      --card-bg: #1C2541;
+      --font-family: 'Inter', sans-serif;
+      --transition-speed: 0.35s;
+    }
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      line-height:1.6;
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    @keyframes fadeInSlide {
+      from { opacity:0; transform:translateY(20px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+    @keyframes neonPulse {
+      0% { box-shadow: 0 0 1px var(--accent-green); }
+      50% { box-shadow: 0 0 10px var(--accent-green), 0 0 20px rgba(125,249,160,0.5); }
+      100% { box-shadow: 0 0 1px var(--accent-green); }
+    }
+
+    header {
+      background-color: var(--card-bg);
+      padding:15px 5%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      box-shadow:0 4px 20px rgba(0,0,0,0.4);
+      position:sticky;
+      top:0;
+      z-index:1000;
+    }
+    .logo {
+      font-size:2rem;
+      font-weight:800;
+      color: var(--accent-green);
+      text-shadow:0 0 8px rgba(125,249,160,0.8);
+    }
+    .nav-toggle {
+      display:none;
+      background:none;
+      border:none;
+      color: var(--accent-green);
+      font-size:1.8rem;
+      cursor:pointer;
+      transition: color var(--transition-speed), transform var(--transition-speed);
+      z-index:1001;
+    }
+    nav {
+      display:flex;
+      gap:8px;
+    }
+    nav a {
+      color: var(--text-light);
+      text-decoration:none;
+      padding:10px 18px;
+      margin:0 4px;
+      border-radius:25px;
+      transition: background-color var(--transition-speed), color var(--transition-speed), box-shadow var(--transition-speed), transform 0.2s;
+      font-weight:600;
+    }
+    nav a:hover {
+      background-color: rgba(125,249,160,0.15);
+      color: var(--accent-green);
+      transform: translateY(-2px);
+      box-shadow: 0 0 5px rgba(125,249,160,0.5);
+    }
+    nav a.active {
+      background-color: var(--accent-green);
+      color: var(--bg-dark);
+      font-weight:700;
+      animation: neonPulse 2s infinite ease-in-out;
+    }
+
+    .container {
+      max-width:1200px;
+      margin:0 auto;
+      padding:30px 5%;
+      animation: fadeInSlide 1s ease-out;
+    }
+    .hero-section {
+      text-align:center;
+      padding:40px 0 30px;
+      margin-bottom:30px;
+    }
+    .hero-section h1 {
+      font-size:3rem;
+      font-weight:800;
+      color: var(--accent-green);
+      margin-bottom:15px;
+      text-shadow:0 0 10px rgba(125,249,160,0.6);
+    }
+    .hero-section p {
+      font-size:1.2rem;
+      color:#A0A0A0;
+    }
+
+    .news-grid {
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+      gap:30px;
+      padding-bottom:50px;
+    }
+    .card {
+      background-color: var(--card-bg);
+      border-radius:15px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.4);
+      transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+      opacity:0;
+      transform:translateY(20px);
+    }
+    .news-card {
+      padding:0;
+      overflow:hidden;
+      text-align:left;
+    }
+    .news-card:hover {
+      transform:translateY(-8px);
+      box-shadow:0 15px 40px rgba(125,249,160,0.35);
+    }
+    .news-card-image {
+      width:100%;
+      height:200px;
+      background: linear-gradient(135deg, var(--bg-dark) 50%, #15203A 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:3rem;
+      color: var(--accent-green);
+      transition: all 0.4s ease-out;
+    }
+    .news-card:hover .news-card-image i {
+      transform:scale(1.1) rotate(5deg);
+      text-shadow:0 0 10px rgba(125,249,160,0.8);
+      color:#fff;
+    }
+    .news-card-content {
+      padding:25px;
+      border-top:1px solid rgba(125,249,160,0.1);
+    }
+    .news-card-content h3 {
+      font-size:1.4rem;
+      color: var(--text-light);
+      margin-bottom:10px;
+      transition: color 0.3s;
+    }
+    .news-card:hover .news-card-content h3 {
+      color: var(--accent-green);
+    }
+    .news-card-content p {
+      font-size:0.95rem;
+      color:#A0A0A0;
+      margin-bottom:20px;
+    }
+    .news-card-content a {
+      display:inline-block;
+      color: var(--accent-green);
+      text-decoration:none;
+      font-weight:700;
+      position:relative;
+      transition: padding-right 0.3s;
+    }
+    .news-card-content a::after {
+      content:'>>';
+      position:absolute;
+      opacity:0;
+      right:-15px;
+      transition: right 0.3s, opacity 0.3s;
+    }
+    .news-card-content a:hover {
+      color:#fff;
+      padding-right:15px;
+    }
+    .news-card-content a:hover::after {
+      opacity:1;
+      right:0;
+    }
+
+    footer {
+      text-align:center;
+      padding:20px 5%;
+      background-color: var(--card-bg);
+      margin-top:50px;
+      border-top:2px solid rgba(125,249,160,0.1);
+      font-size:0.9rem;
+      color:#A0A0A0;
+      box-shadow:0 -5px 15px rgba(0,0,0,0.3);
+    }
+
+    @media (max-width:768px) {
+      .nav-toggle {
+        display:block;
+      }
+      nav {
+        display:none;
+        width:100%;
+        flex-direction:column;
+        background-color: var(--card-bg);
+        position:absolute;
+        top:60px;
+        left:0;
+        padding:10px 0;
+        z-index:999;
+        box-shadow:0 5px 15px rgba(0,0,0,0.6);
+        transform: translateY(-100%);
+        transition: transform 0.3s ease-out;
+      }
+      nav.open {
+        display:flex;
+        transform: translateY(0);
+      }
+      nav a {
+        display:block;
+        text-align:center;
+        margin:5px 10px;
+        padding:12px;
+        border-radius:8px;
+        border-bottom:1px solid rgba(125,249,160,0.1);
+      }
+      .news-grid {
+        grid-template-columns:1fr;
+        gap:20px;
+      }
+      .news-card:hover {
+        transform:translateY(-3px);
+      }
+      .news-card-image {
+        height:150px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">MyCarbon</div>
+    <button class="nav-toggle" aria-label="Toggle navigation" id="nav-toggle">
+      <i class="fas fa-bars"></i>
+    </button>
+    <nav id="main-nav">
+      <a href="index.html"><i class="fas fa-home"></i> Home</a>
+      <a href="calculator.html"><i class="fas fa-calculator"></i> Calculator</a>
+      <a href="news.html" class="active"><i class="fas fa-newspaper"></i> News</a>
+      <a href="chatbot.html"><i class="fas fa-robot"></i> Chatbot</a>
+      <a href="prevention.html"><i class="fas fa-shield-alt"></i> Prevention</a>
+      <a href="game.html"><i class="fas fa-gamepad"></i> Game</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero-section">
+      <h1>Climate & Sustainability News 📰</h1>
+      <p>The latest updates, breakthroughs, and tips for a greener life.</p>
+    </section>
+
+    <div class="news-grid">
+      <!-- News item 1 -->
+      <div class="card news-card">
+        <div class="news-card-image"><i class="fas fa-chart-pie"></i></div>
+        <div class="news-card-content">
+          <h3>Only two years left of world’s carbon budget to meet 1.5°C target, scientists warn</h3>
+          <p>The world’s remaining carbon budget to meet the international target of 1.5°C has just two years left at the current rate of emissions. :contentReference[oaicite:0]{index=0}</p>
+          <a href="https://www.theguardian.com/environment/2025/jun/18/only-two-years-left-of-world-carbon-budget-to-meet-15c-target-scientists-warn-climate-crisis" target="_blank">Read Full Article →</a>
+        </div>
+      </div>
+
+      <!-- News item 2 -->
+      <div class="card news-card">
+        <div class="news-card-image"><i class="fas fa-industry"></i></div>
+        <div class="news-card-content">
+          <h3>India’s Export Engine Faces Carbon Headwinds</h3>
+          <p>More than two-thirds of India’s $824.9 billion exports are exposed to stricter net-zero rules in major markets. :contentReference[oaicite:1]{index=1}</p>
+          <a href="https://www.reuters.com/sustainability/climate-energy/heidelberg-sells-out-net-zero-cement-norway-plant-ceo-says-2025-06-18/" target="_blank">Read Full Article →</a>
+        </div>
+      </div>
+
+      <!-- News item 3 -->
+      <div class="card news-card">
+        <div class="news-card-image"><i class="fas fa-apple"></i></div>
+        <div class="news-card-content">
+          <h3>Apple Cuts Its Carbon Footprint by 5% in 2024</h3>
+          <p>Apple reports a 5 % drop in climate-pollution, amounting to 800,000 metric tons less CO₂-equivalent in 2024. :contentReference[oaicite:2]{index=2}</p>
+          <a href="https://www.theverge.com/news/650082/apple-environmental-progress-report-greenhouse-gas-emissions-climate-energy" target="_blank">Read Full Article →</a>
+        </div>
+      </div>
+
+      <!-- News item 4 -->
+      <div class="card news-card">
+        <div class="news-card-image"><i class="fas fa-subway"></i></div>
+        <div class="news-card-content">
+          <h3>Indian Metro Rail to Monetise Carbon Credits</h3>
+          <p>The Nagpur/Pune metro plans to trade carbon credits from solar power & regenerative braking. :contentReference[oaicite:3]{index=3}</p>
+          <a href="https://timesofindia.indiatimes.com/city/nagpur/metro-eyes-carbon-gold-nagpur-pune-metros-to-monetise-green-footprint-through-carbon-credits/articleshow/124511442.cms" target="_blank">Read Full Article →</a>
+        </div>
+      </div>
+
+      <!-- News item 5 -->
+      <div class="card news-card">
+        <div class="news-card-image"><i class="fas fa-handshake"></i></div>
+        <div class="news-card-content">
+          <h3>Are tariffs good for the climate?</h3>
+          <p>Analysis explores whether protectionism can help reduce carbon emissions — trade is responsible for roughly a quarter globally. :contentReference[oaicite:4]{index=4}</p>
+          <a href="https://www.lemonde.fr/en/economy/article/2025/08/29/are-tariffs-good-for-the-climate_6744848_19.html" target="_blank">Read Full Article →</a>
+        </div>
+      </div>
+
+      <!-- News item 6 -->
+      <div class="card news-card">
+        <div class="news-card-image"><i class="fas fa-cement"></i></div>
+        <div class="news-card-content">
+          <h3>Heidelberg sells out of net-zero cement from Norway plant</h3>
+          <p>Germany's Heidelberg Materials has pre-sold all the zero-emissions cement for 2025 from its Norway plant. :contentReference[oaicite:5]{index=5}</p>
+          <a href="https://www.reuters.com/sustainability/climate-energy/heidelberg-sells-out-net-zero-cement-norway-plant-ceo-says-2025-06-18/" target="_blank">Read Full Article →</a>
+        </div>
+      </div>
+
+      <!-- News item 7 -->
+      <div class="card news-card">
+        <div class="news-card-image"><i class="fas fa-globe"></i></div>
+        <div class="news-card-content">
+          <h3>India records first half-year CO₂ emission drop in 2025</h3>
+          <p>CO₂ emissions from India’s electricity sector dropped by 1% in H1 2025. :contentReference[oaicite:6]{index=6}</p>
+          <a href="https://currentaffairs.adda247.com/india-records-first-half-year-co%e2%82%82-emission-drop-in-2025/" target="_blank">Read Full Article →</a>
+        </div>
+      </div>
+
+      <!-- News item 8 -->
+      <div class="card news-card">
+        <div class="news-card-image"><i class="fas fa-leaf"></i></div>
+        <div class="news-card-content">
+          <h3>5 priority areas to lower agriculture’s carbon footprint</h3>
+          <p>India’s NITI Aayog outlines five focus areas including input-efficiency and sustainable cropping to reduce farming’s carbon footprint. :contentReference[oaicite:7]{index=7}</p>
+          <a href="https://www.business-standard.com/industry/agriculture/niti-aayog-s-chand-outlines-5-priority-areas-to-lower-carbon-footprint-125052901906_1.html" target="_blank">Read Full Article →</a>
+        </div>
+      </div>
+
+      <!-- Duplicate/copy more cards until you have 20+ -->
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 MyCarbon Tracker. Earth-friendly design 🌳.</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navToggle = document.getElementById('nav-toggle');
+      const mainNav = document.getElementById('main-nav');
+
+      if (navToggle && mainNav) {
+        navToggle.addEventListener('click', () => {
+          mainNav.classList.toggle('open');
+          const icon = navToggle.querySelector('i');
+          if (mainNav.classList.contains('open')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+          } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+          }
+        });
+      }
+
+      const newsCards = document.querySelectorAll('.news-card');
+      const ANIM_DURATION = 0.8;
+      const STAGGER = 0.15;
+      newsCards.forEach((card, idx) => {
+        card.style.animationName = 'fadeInSlide';
+        card.style.animationDuration = `${ANIM_DURATION}s`;
+        card.style.animationFillMode = 'both';
+        card.style.animationDelay = `${idx * STAGGER}s`;
+      });
+    });
+  </script>
+</body>
+</html>

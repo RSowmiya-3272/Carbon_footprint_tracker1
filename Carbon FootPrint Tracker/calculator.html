@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyCarbon – Full Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-color: #0b132b;
+      --text-color: #f1f1f1;
+      --card-bg: #1c2541;
+      --accent: #7df9a0;
+      --accent2: #00bcd4;
+      --danger: #e74c3c;
+      --success: #2ecc71;
+      --transition: 0.3s ease;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      transition: var(--transition);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 5%;
+      background: var(--card-bg);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: var(--accent);
+    }
+
+    nav a {
+      color: var(--text-color);
+      text-decoration: none;
+      margin: 0 12px;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: var(--accent);
+    }
+
+    main {
+      padding: 40px 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .hero-section {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .hero-section h1 {
+      color: var(--accent2);
+      font-size: 2.5rem;
+      font-weight: 700;
+    }
+
+    .hero-section p {
+      color: #aaa;
+    }
+
+    .calculator-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+
+    .form-section {
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease;
+    }
+
+    .form-section:hover {
+      transform: translateY(-5px);
+    }
+
+    .form-section h3 {
+      color: var(--accent);
+      margin-bottom: 15px;
+      border-bottom: 2px solid rgba(125, 249, 160, 0.3);
+      padding-bottom: 8px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 5px;
+      font-size: 1rem;
+      background: #243b55;
+      color: var(--text-color);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    input:focus,
+    select:focus {
+      border: 2px solid var(--accent2);
+      background: #1e3a5f;
+    }
+
+    .btn-gradient {
+      margin-top: 20px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      border: none;
+      color: #000;
+      font-size: 1.1rem;
+      font-weight: 700;
+      padding: 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    .btn-gradient:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(125, 249, 160, 0.6);
+    }
+
+    /* Result Section */
+    .result-box {
+      margin-top: 30px;
+      background: var(--card-bg);
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .result-value {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 10px 0;
+    }
+
+    .low {
+      color: var(--success);
+    }
+
+    .medium {
+      color: var(--accent);
+    }
+
+    .high {
+      color: var(--danger);
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      background: var(--card-bg);
+      color: #aaa;
+    }
+
+    @media (max-width: 600px) {
+      .hero-section h1 {
+        font-size: 1.8rem;
+      }
+
+      .btn-gradient {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">MyCarbon</div>
+    <nav>
+      <a href="index.html"><i class="fas fa-home"></i> Home</a>
+      <a href="#" class="active"><i class="fas fa-calculator"></i> Calculator</a>
+      <a href="news.html"><i class="fas fa-newspaper"></i> News</a>
+      <a href="chatbot.html"><i class="fas fa-robot"></i> Chatbot</a>
+      <a href="prevention.html"><i class="fas fa-shield-alt"></i> Prevention</a>
+      <a href="game.html"><i class="fas fa-gamepad"></i> Game</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero-section">
+      <h1>The Full Footprint Calculator 📝</h1>
+      <p>Enter your lifestyle details to calculate your monthly CO₂ footprint.</p>
+    </section>
+
+    <form id="carbonForm" class="calculator-form-grid">
+      <div class="form-section">
+        <h3><i class="fas fa-car"></i> Transportation</h3>
+        <label>Car Travel (km/month)</label>
+        <input type="number" id="car" placeholder="e.g., 1000" />
+
+        <label>Flights (hours/year)</label>
+        <input type="number" id="flights" placeholder="e.g., 10" />
+
+        <label>Public Transport (km/month)</label>
+        <input type="number" id="public" placeholder="e.g., 500" />
+      </div>
+
+      <div class="form-section">
+        <h3><i class="fas fa-plug"></i> Home Energy</h3>
+        <label>Electricity Usage (kWh/month)</label>
+        <input type="number" id="electricity" placeholder="e.g., 300" />
+
+        <label>Natural Gas (therms/month)</label>
+        <input type="number" id="gas" placeholder="e.g., 50" />
+
+        <label>Household Size</label>
+        <input type="number" id="household" placeholder="e.g., 3" />
+      </div>
+
+      <div class="form-section">
+        <h3><i class="fas fa-leaf"></i> Food & Lifestyle</h3>
+        <label>Meat Consumption</label>
+        <select id="meat">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="rarely">Rarely/Vegetarian</option>
+          <option value="vegan">Vegan</option>
+        </select>
+
+        <label>Waste Management</label>
+        <select id="waste">
+          <option value="high">High Waste</option>
+          <option value="medium">Moderate</option>
+          <option value="low">Low/Composting</option>
+        </select>
+      </div>
+
+      <div class="form-section" style="display:flex;flex-direction:column;justify-content:center;">
+        <h3><i class="fas fa-chart-line"></i> Calculate</h3>
+        <p>Click below to process your total footprint.</p>
+        <button type="submit" class="btn-gradient">
+          <i class="fas fa-calculator"></i> Calculate My Footprint
+        </button>
+      </div>
+    </form>
+
+    <div id="result" class="result-box" style="display:none;">
+      <h3>Your Estimated Monthly Carbon Footprint:</h3>
+      <div id="footprintValue" class="result-value"></div>
+      <p id="rating"></p>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 MyCarbon Tracker. Designed for awareness 🌎</p>
+  </footer>
+
+  <script>
+    document.getElementById("carbonForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const car = parseFloat(document.getElementById("car").value) || 0;
+      const flights = parseFloat(document.getElementById("flights").value) || 0;
+      const publicT = parseFloat(document.getElementById("public").value) || 0;
+      const electricity = parseFloat(document.getElementById("electricity").value) || 0;
+      const gas = parseFloat(document.getElementById("gas").value) || 0;
+      const household = parseFloat(document.getElementById("household").value) || 1;
+      const meat = document.getElementById("meat").value;
+      const waste = document.getElementById("waste").value;
+
+      // Accurate emission factors (approximate global averages)
+      const carEmission = car * 0.192; // kg CO₂ per km
+      const flightEmission = (flights * 90) / 12; // kg CO₂ per hour per month
+      const publicEmission = publicT * 0.089; // kg CO₂ per km
+      const electricityEmission = electricity * 0.475; // kg CO₂ per kWh
+      const gasEmission = gas * 5.3; // kg CO₂ per therm
+
+      // Food and waste multipliers
+      const meatFactor = {
+        daily: 600,
+        weekly: 300,
+        rarely: 150,
+        vegan: 80,
+      }[meat];
+
+      const wasteFactor = {
+        high: 200,
+        medium: 100,
+        low: 50,
+      }[waste];
+
+      const total =
+        (carEmission +
+          flightEmission +
+          publicEmission +
+          electricityEmission +
+          gasEmission) /
+          household +
+        meatFactor +
+        wasteFactor;
+
+      const footprint = total.toFixed(2);
+      const footprintValue = document.getElementById("footprintValue");
+      const rating = document.getElementById("rating");
+      const resultBox = document.getElementById("result");
+
+      let category = "";
+      if (footprint < 1000) {
+        category = "Low";
+        footprintValue.className = "result-value low";
+      } else if (footprint < 2000) {
+        category = "Medium";
+        footprintValue.className = "result-value medium";
+      } else {
+        category = "High";
+        footprintValue.className = "result-value high";
+      }
+
+      footprintValue.textContent = `${footprint} kg CO₂e/month`;
+      rating.textContent = `Your impact level is: ${category}`;
+      resultBox.style.display = "block";
+      resultBox.scrollIntoView({ behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>

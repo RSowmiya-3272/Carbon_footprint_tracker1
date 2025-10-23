@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyCarbon – Reforestation Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* --- Global Variables --- */
+        :root {
+            --bg-dark: #0B132B;
+            --accent-green: #7DF9A0;
+            --text-light: #E0E0E0;
+            --card-bg: #1C2541;
+            --font-family: 'Inter', sans-serif;
+            --transition-speed: 0.3s;
+        }
+
+        /* --- Reset and Base Styles --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Game Container --- */
+        .game-container {
+            width: 95%;
+            max-width: 900px;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Game Header and Scoreboard --- */
+        .game-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .game-header h1 {
+            color: var(--accent-green);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px rgba(125, 249, 160, 0.7);
+        }
+        
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: var(--bg-dark);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .stat-value {
+            color: var(--accent-green);
+            font-size: 1.5rem;
+            margin-top: 5px;
+        }
+        
+        /* --- Main Game Area (Tree Visualization) --- */
+        #forest-display {
+            background-color: #081029; /* Darker field */
+            min-height: 250px;
+            border-radius: 10px;
+            border: 2px solid var(--accent-green);
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end; /* Trees grow up from the bottom */
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #forest-display::before {
+            content: 'Your Forest';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(125, 249, 160, 0.3);
+            font-size: 0.9rem;
+        }
+        
+        .tree {
+            font-size: 2.5rem;
+            margin: 0 5px;
+            transition: all 0.5s ease-out;
+            transform: translateY(0); /* Base position */
+        }
+        
+        .tree-icon {
+            color: #27ae60; /* Darker green */
+            text-shadow: 0 0 5px rgba(125, 249, 160, 0.3);
+        }
+        
+        /* --- Action Area --- */
+        .action-area {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(125, 249, 160, 0.2);
+            text-align: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .btn-action {
+            padding: 12px 25px;
+            background-color: var(--accent-green);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 10px rgba(125, 249, 160, 0.4);
+        }
+        
+        .btn-action:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-action:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+        
+        #game-log {
+            min-height: 60px;
+            background-color: var(--bg-dark);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 0.9rem;
+            color: #A0A0A0;
+            overflow-y: auto;
+        }
+        
+        .log-entry.success { color: var(--accent-green); }
+        .log-entry.error { color: #e74c3c; }
+        .log-entry.info { color: #A0A0A0; }
+        
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 20px;
+            }
+            .game-header h1 {
+                font-size: 2rem;
+            }
+            .game-stats {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            .stat-item {
+                flex-basis: 45%;
+            }
+            .action-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .btn-action {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="game-container">
+        <div class="game-header">
+            <h1><i class="fas fa-tree"></i> Reforestation Builder</h1>
+            <p>Convert Carbon Credits into native trees and watch your forest thrive!</p>
+        </div>
+
+        <div class="game-stats">
+            <div class="stat-item">
+                Carbon Credits (<i class="fas fa-coins"></i>)
+                <div class="stat-value" id="credits-stat">100</div>
+            </div>
+            <div class="stat-item">
+                Total Trees (<i class="fas fa-seedling"></i>)
+                <div class="stat-value" id="trees-stat">0</div>
+            </div>
+            <div class="stat-item">
+                Forest Health (<i class="fas fa-heart"></i>)
+                <div class="stat-value" id="health-stat">100%</div>
+            </div>
+            <div class="stat-item">
+                Year (<i class="fas fa-calendar-alt"></i>)
+                <div class="stat-value" id="year-stat">1</div>
+            </div>
+        </div>
+        
+        <div id="forest-display">
+            <p id="empty-message" style="color: rgba(255, 255, 255, 0.4); margin-top: 100px;">Your plot is empty. Start planting!</p>
+        </div>
+        
+        <div class="action-area">
+            <h2>Actions</h2>
+            <div class="action-buttons">
+                <button id="plant-button" class="btn-action">
+                    <i class="fas fa-leaf"></i> Plant Tree (50 Credits)
+                </button>
+                <button id="maintain-button" class="btn-action">
+                    <i class="fas fa-water"></i> Maintain Forest (10 Credits)
+                </button>
+                <button id="next-year-button" class="btn-action">
+                    <i class="fas fa-forward"></i> Next Year
+                </button>
+            </div>
+            
+            <h3>Game Log</h3>
+            <div id="game-log">
+                <div class="log-entry info">Game started. Welcome to your forest!</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Game State Variables ---
+        let credits = 100;
+        let totalTrees = 0;
+        let forestHealth = 100; // Percentage
+        let currentYear = 1;
+        
+        const TREE_COST = 50;
+        const MAINTENANCE_COST = 10;
+        const MAX_HEALTH = 100;
+        const HEALTH_DECAY = 5; // Health lost per year without maintenance
+
+        // --- DOM Elements ---
+        const creditsStat = document.getElementById('credits-stat');
+        const treesStat = document.getElementById('trees-stat');
+        const healthStat = document.getElementById('health-stat');
+        const yearStat = document.getElementById('year-stat');
+        const forestDisplay = document.getElementById('forest-display');
+        const gameLog = document.getElementById('game-log');
+        const plantButton = document.getElementById('plant-button');
+        const maintainButton = document.getElementById('maintain-button');
+        const nextYearButton = document.getElementById('next-year-button');
+        const emptyMessage = document.getElementById('empty-message');
+
+        // --- Utility Functions ---
+
+        function updateStats() {
+            creditsStat.textContent = credits;
+            treesStat.textContent = totalTrees;
+            healthStat.textContent = `${forestHealth}%`;
+            yearStat.textContent = currentYear;
+            
+            // Update UI feedback
+            plantButton.disabled = credits < TREE_COST;
+            maintainButton.disabled = credits < MAINTENANCE_COST;
+            
+            if (forestHealth < 50) {
+                healthStat.style.color = '#e74c3c'; // Red if poor
+            } else if (forestHealth < 80) {
+                healthStat.style.color = '#f1c40f'; // Yellow if medium
+            } else {
+                healthStat.style.color = 'var(--accent-green)'; // Green if good
+            }
+        }
+
+        function logEvent(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.classList.add('log-entry', type);
+            entry.textContent = `[Year ${currentYear}] ${message}`;
+            
+            // Prepend new entry to the top
+            if (gameLog.firstChild) {
+                gameLog.insertBefore(entry, gameLog.firstChild);
+            } else {
+                gameLog.appendChild(entry);
+            }
+        }
+        
+        function visualizeForest() {
+            // Remove previous trees/message
+            forestDisplay.innerHTML = '';
+            
+            if (totalTrees === 0) {
+                forestDisplay.appendChild(emptyMessage);
+                emptyMessage.style.display = 'block';
+                return;
+            }
+            
+            emptyMessage.style.display = 'none';
+
+            // Re-render all trees
+            for (let i = 0; i < totalTrees; i++) {
+                const treeDiv = document.createElement('span');
+                treeDiv.classList.add('tree');
+                
+                // Use different tree types for visual variety
+                const icon = i % 3 === 0 ? '🌳' : (i % 3 === 1 ? '🌲' : '🌴');
+                treeDiv.textContent = icon;
+                
+                // Apply subtle random scaling and color based on health
+                const sizeFactor = 1 + (Math.random() * 0.5);
+                treeDiv.style.fontSize = `${2.5 * sizeFactor}rem`;
+                
+                let healthColor = `hsl(120, ${50 + (forestHealth / 2)}%, 30%)`; // Dynamic green
+                treeDiv.style.color = healthColor;
+
+                forestDisplay.appendChild(treeDiv);
+            }
+        }
+        
+        // --- Game Actions ---
+
+        function handlePlantTree() {
+            if (credits >= TREE_COST) {
+                credits -= TREE_COST;
+                totalTrees += 1;
+                
+                // Planting slightly increases health
+                forestHealth = Math.min(MAX_HEALTH, forestHealth + 2);
+                
+                logEvent(`Planted one new tree! Forest size is now ${totalTrees}.`, 'success');
+                visualizeForest();
+                updateStats();
+            } else {
+                logEvent('Insufficient Carbon Credits to plant a tree.', 'error');
+            }
+        }
+        
+        function handleMaintainForest() {
+            if (credits >= MAINTENANCE_COST) {
+                credits -= MAINTENANCE_COST;
+                
+                // Maintenance boosts health significantly
+                const healthBoost = 10 + Math.floor(Math.random() * 5); // 10-14 boost
+                forestHealth = Math.min(MAX_HEALTH, forestHealth + healthBoost);
+                
+                logEvent(`Spent ${MAINTENANCE_COST} credits on forest maintenance. Health boosted to ${forestHealth}%.`, 'success');
+                updateStats();
+            } else {
+                logEvent('Insufficient credits for maintenance.', 'error');
+            }
+        }
+
+        function handleNextYear() {
+            currentYear += 1;
+            
+            // 1. Health Decay: Trees lose health if not maintained
+            let lostHealth = HEALTH_DECAY;
+            if (totalTrees > 5) lostHealth += 5; // More trees = harder maintenance
+            
+            forestHealth = Math.max(0, forestHealth - lostHealth);
+            logEvent(`Year end: Forest Health decayed by ${lostHealth} points. Current health: ${forestHealth}%.`, 'info');
+            
+            // 2. Tree Growth and Credit Income
+            if (forestHealth > 50) {
+                credits += totalTrees * 5; // Credits based on healthy trees
+                logEvent(`Forest generated ${totalTrees * 5} credits this year from carbon sequestration.`, 'success');
+            } else if (forestHealth === 0 && totalTrees > 0) {
+                 // Disaster scenario
+                const treesLost = Math.floor(totalTrees / 5);
+                totalTrees -= treesLost;
+                logEvent(`Disaster! Due to poor health, the forest lost ${treesLost} trees.`, 'error');
+            }
+            
+            // 3. Game Over Check
+            if (totalTrees === 0 && currentYear > 1) {
+                alert(`Game Over! Your forest plot failed. You survived ${currentYear - 1} years.`);
+                return initializeGame();
+            }
+            
+            visualizeForest();
+            updateStats();
+        }
+
+        // --- Initialization ---
+        
+        function initializeGame() {
+            credits = 100;
+            totalTrees = 0;
+            forestHealth = 100;
+            currentYear = 1;
+            gameLog.innerHTML = '<div class="log-entry info">Game started. Welcome to your forest!</div>';
+            visualizeForest();
+            updateStats();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Attach event listeners
+            plantButton.addEventListener('click', handlePlantTree);
+            maintainButton.addEventListener('click', handleMaintainForest);
+            nextYearButton.addEventListener('click', handleNextYear);
+            
+            initializeGame();
+        });
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,385 @@
+/*
+ * calculator.css
+ * This file contains the layout styles specific to the full carbon footprint calculator form.
+ * It relies on the global styles defined in styles.css for colors, fonts, and base component styling (like .card, .input-group, .btn-gradient).
+ */
+
+/* Grid layout for the calculator sections */
+.calculator-form-grid {
+    /* Creates a responsive grid with columns that are at least 300px wide */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+/* Styling for each major form section (Transportation, Energy, etc.) */
+.form-section {
+    /* Reuses the background and shadow from the global .card style, but with custom padding */
+    background-color: var(--card-bg);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.form-section h3 {
+    color: var(--accent-green);
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+    /* Adds a subtle accent divider below the heading */
+    border-bottom: 1px solid rgba(125, 249, 160, 0.3);
+    padding-bottom: 10px;
+}
+
+/* Specific styling for the final action section to center the button */
+.form-section-action {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* Center items horizontally if they don't fill the container */
+}
+
+/* Ensure the submit button fits well in the action section */
+.form-section-action .btn-gradient {
+    max-width: 300px; /* Constrain the button width for better appearance */
+    margin-top: 20px;
+}
+
+/* Responsive adjustment for small screens */
+@media (max-width: 600px) {
+    .calculator-form-grid {
+        gap: 20px;
+    }
+    .form-section {
+        padding: 20px;
+    }
+}/*
+ * Full CSS Stylesheet for MyCarbon – Smart Carbon Footprint Tracker
+ * Theme: Dark Blue (#0B132B) with Light Green Accent (#7DF9A0)
+ * Features: Transitions, Animations, and Responsive Design
+ */
+
+/* ------------------------------------------------------------------
+   GLOBAL SETUP & VARIABLES
+-------------------------------------------------------------------*/
+:root {
+    --bg-dark: #0B132B;          /* Deep Dark Blue Background */
+    --accent-green: #7DF9A0;     /* Light Green Accent (Neon/Eco) */
+    --text-light: #E0E0E0;      /* Light Gray Text */
+    --card-bg: #1C2541;          /* Slightly Lighter Card/Header Background */
+    --font-family: 'Inter', sans-serif;
+    --transition-speed: 0.3s;
+    --hover-scale: 1.02;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    line-height: 1.6;
+    min-height: 100vh;
+    /* Smooth background transition for any future theme toggles */
+    transition: background-color var(--transition-speed);
+}
+
+/* --- Keyframes for Animations --- */
+
+/* Simple pulse effect for attention-grabbing elements */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(125, 249, 160, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(125, 249, 160, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(125, 249, 160, 0); }
+}
+
+/* Fade in for content blocks on page load */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Main Content Layout --- */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 5%;
+    animation: fadeIn 0.8s ease-out; /* Apply fade in to main content */
+}
+
+/* ------------------------------------------------------------------
+   HEADER & NAVIGATION STYLES
+-------------------------------------------------------------------*/
+header {
+    background-color: var(--card-bg);
+    padding: 15px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Stronger shadow for depth */
+}
+
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent-green);
+    /* Subtle text shadow for a neon effect */
+    text-shadow: 0 0 5px rgba(125, 249, 160, 0.5);
+}
+
+nav a {
+    color: var(--text-light);
+    text-decoration: none;
+    padding: 10px 18px; /* Slightly larger clickable area */
+    margin: 0 4px;
+    border-radius: 20px; /* Fully rounded pills */
+    transition: background-color var(--transition-speed), color var(--transition-speed), transform 0.2s;
+    font-weight: 500;
+}
+
+nav a i {
+    margin-right: 5px;
+}
+
+nav a:hover {
+    background-color: rgba(125, 249, 160, 0.15); /* Stronger hover background */
+    color: var(--accent-green);
+    transform: translateY(-2px); /* Lift effect on hover */
+}
+
+nav a.active {
+    background-color: var(--accent-green);
+    color: var(--bg-dark); /* Dark text on green background for active state */
+    font-weight: 600;
+    /* Optional: Add a slow pulse to the active link */
+    animation: none; /* Removed pulse for clean look, but uncomment the next line to enable it */
+    /* animation: pulse 2s infinite; */
+}
+
+/* ------------------------------------------------------------------
+   HERO & SECTION HEADINGS
+-------------------------------------------------------------------*/
+.hero-section {
+    text-align: center;
+    padding: 50px 0;
+    margin-bottom: 30px;
+}
+
+.hero-section h1 {
+    font-size: 3rem; /* Larger font */
+    font-weight: 700;
+    color: var(--accent-green);
+    margin-bottom: 10px;
+    /* Underline animation */
+    display: inline-block;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.hero-section h1::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--accent-green);
+    transition: width 0.5s ease-out;
+}
+
+/* Simple state to show the underline after the page loads */
+.hero-section:hover h1::after {
+    width: 100%;
+}
+
+.hero-section p {
+    font-size: 1.2rem;
+    color: #A0A0A0;
+}
+
+/* ------------------------------------------------------------------
+   CARD & FORM STYLES
+-------------------------------------------------------------------*/
+.card {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    border-left: 3px solid transparent; /* Prepare for accent border animation */
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed), border-left-color var(--transition-speed);
+}
+
+.card:hover {
+    transform: scale(var(--hover-scale)); /* Subtle scale up on hover */
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    border-left-color: var(--accent-green); /* Accent color slides in */
+}
+
+.card h2 {
+    color: var(--accent-green);
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+    border-bottom: 2px solid rgba(125, 249, 160, 0.3);
+    padding-bottom: 10px;
+}
+
+/* Input Fields and Selects */
+.input-group label i {
+    transition: color var(--transition-speed);
+}
+.input-group:focus-within label i {
+    color: #fff; /* White icon when input is focused */
+}
+
+input[type="number"], select, input[type="text"] {
+    width: 100%;
+    padding: 14px; /* Larger padding */
+    border: 2px solid var(--card-bg);
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5); /* Inner shadow for depth */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="number"]:focus, select:focus, input[type="text"]:focus {
+    border-color: var(--accent-green);
+    outline: none;
+    box-shadow: 0 0 15px rgba(125, 249, 160, 0.7); /* Stronger focus glow */
+}
+
+/* ------------------------------------------------------------------
+   BUTTONS & ACCENT ELEMENTS
+-------------------------------------------------------------------*/
+
+.btn-gradient {
+    /* ... (Existing styles for gradient, opacity, and transform are fine) ... */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Glowing Border effect on button hover */
+.btn-gradient:hover::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    animation: shine 1.5s infinite linear;
+    opacity: 0.5;
+}
+
+@keyframes shine {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.btn-full-calc {
+    border: 2px solid var(--accent-green);
+    color: var(--accent-green);
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+.btn-full-calc:hover {
+    background-color: var(--accent-green);
+    color: var(--bg-dark); /* Dark text on hover */
+    transform: translateY(-3px); /* Small lift */
+    box-shadow: 0 4px 10px rgba(125, 249, 160, 0.3);
+}
+
+/* ------------------------------------------------------------------
+   HOME PAGE SPECIFICS (Chart Animation)
+-------------------------------------------------------------------*/
+
+/* Bar chart animation on load */
+.fake-bar-chart div {
+    /* Ensure the height transition is smooth */
+    transition: height 1s ease-out;
+    /* Start all bars at 0 height, JS will set the final height */
+    height: 0 !important; 
+    position: relative;
+    /* Add bar labels */
+    padding-top: 5px;
+    font-weight: 700;
+}
+
+/* Apply staggered animation to the bars using JS later, or use CSS keyframes: */
+@keyframes barRise {
+    from { height: 0; }
+}
+
+/* Footer subtle upward shadow */
+footer {
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ------------------------------------------------------------------
+   RESPONSIVENESS & MOBILE NAV
+-------------------------------------------------------------------*/
+
+/* Navigation Toggle Button (Hidden by default) */
+.nav-toggle {
+    display: none; 
+    background: none;
+    border: none;
+    color: var(--accent-green);
+    font-size: 1.8rem; /* Slightly larger icon */
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.nav-toggle:hover {
+    transform: rotate(5deg);
+}
+
+@media (max-width: 768px) {
+    /* ... (Existing mobile layout rules) ... */
+    
+    header {
+        justify-content: space-between; 
+        padding: 15px 5%;
+        flex-direction: row; 
+    }
+    
+    .nav-toggle {
+        display: block; 
+    }
+
+    nav {
+        display: none; 
+        /* ... (Other mobile nav display properties) ... */
+    }
+    
+    nav.open {
+        display: flex; 
+        /* Add a quick slide-down animation */
+        animation: slideDown 0.3s ease-out;
+    }
+    
+    @keyframes slideDown {
+        from { transform: translateY(-10px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    
+    .card {
+        transform: none !important; /* Disable scale animation on mobile */
+        border-left-color: var(--accent-green); /* Always show the accent border on mobile cards */
+    }
+
+    /* Reset button width on mobile */
+    .btn-gradient {
+        max-width: 100%;
+    }
+}

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyCarbon – Clean Energy Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* --- Global Variables --- */
+        :root {
+            --bg-dark: #0B132B;
+            --accent-green: #7DF9A0;
+            --text-light: #E0E0E0;
+            --card-bg: #1C2541;
+            --font-family: 'Inter', sans-serif;
+            --fossil-red: #e74c3c;
+            --solar-yellow: #f1c40f;
+            --wind-blue: #3498db;
+            --transition-speed: 0.3s;
+        }
+
+        /* --- Reset and Base Styles --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Game Container --- */
+        .game-container {
+            width: 95%;
+            max-width: 1000px;
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Game Header and Dashboard --- */
+        .game-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .game-header h1 {
+            color: var(--accent-green);
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            text-shadow: 0 0 5px rgba(125, 249, 160, 0.7);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            background-color: var(--bg-dark);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 10px 5px;
+            border-left: 2px solid var(--card-bg);
+        }
+        
+        .stat-item:first-child { border-left: none; }
+        
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-top: 5px;
+            transition: color var(--transition-speed);
+        }
+
+        .stat-carbon .stat-value { color: var(--fossil-red); }
+        .stat-cost .stat-value { color: var(--solar-yellow); }
+        .stat-demand .stat-value { color: var(--wind-blue); }
+        .stat-status .stat-value { color: var(--accent-green); }
+
+        /* --- Component Control Area --- */
+        .controls-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .component-card {
+            background-color: var(--bg-dark);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: box-shadow 0.3s;
+        }
+
+        .component-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Component Specific Colors */
+        .component-fossil { border: 2px solid var(--fossil-red); }
+        .component-fossil h3 { color: var(--fossil-red); }
+        
+        .component-solar { border: 2px solid var(--solar-yellow); }
+        .component-solar h3 { color: var(--solar-yellow); }
+
+        .component-wind { border: 2px solid var(--wind-blue); }
+        .component-wind h3 { color: var(--wind-blue); }
+
+        .component-card i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .control-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--card-bg);
+            background-color: #081029;
+            color: var(--text-light);
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        /* --- Action & Log Area --- */
+        .action-log-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(125, 249, 160, 0.2);
+        }
+
+        #next-turn-button {
+            padding: 15px 30px;
+            background-color: var(--accent-green);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        #next-turn-button:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px rgba(125, 249, 160, 0.6);
+        }
+        
+        #game-message {
+            flex-grow: 1;
+            padding: 10px;
+            margin-right: 20px;
+            background-color: var(--bg-dark);
+            border-radius: 8px;
+            font-weight: 600;
+            text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+            min-height: 50px;
+        }
+        
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            .game-header h1 {
+                font-size: 2rem;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .controls-area {
+                grid-template-columns: 1fr;
+            }
+            .action-log-area {
+                flex-direction: column;
+            }
+            #game-message {
+                margin-right: 0;
+                margin-bottom: 15px;
+                width: 100%;
+            }
+            #next-turn-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="game-container">
+        <div class="game-header">
+            <h1><i class="fas fa-solar-panel"></i> Clean Energy Planner</h1>
+            <p>Balance budget, emissions, and demand over 10 turns!</p>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="stat-item stat-demand">
+                Current Demand (MW)
+                <div class="stat-value" id="demand-stat">0</div>
+            </div>
+            <div class="stat-item stat-carbon">
+                Total CO2 (Tonnes)
+                <div class="stat-value" id="carbon-stat">0.0</div>
+            </div>
+            <div class="stat-item stat-cost">
+                Budget ($M)
+                <div class="stat-value" id="budget-stat">10.00</div>
+            </div>
+            <div class="stat-item stat-status">
+                Turn
+                <div class="stat-value" id="turn-stat">1 / 10</div>
+            </div>
+        </div>
+        
+        <div class="controls-area">
+            
+            <div class="component-card component-fossil">
+                <i class="fas fa-fire" style="color: var(--fossil-red);"></i>
+                <h3>Fossil Fuel Plant</h3>
+                <p style="color: var(--fossil-red); font-size:0.9em; margin-bottom:5px;">High Cost, High CO2</p>
+                <input type="number" id="fossil-input" class="control-input" value="40" min="0" max="100">
+                <small>Max Output: 100 MW</small>
+            </div>
+            
+            <div class="component-card component-solar">
+                <i class="fas fa-sun" style="color: var(--solar-yellow);"></i>
+                <h3>Solar Array</h3>
+                <p style="color: var(--solar-yellow); font-size:0.9em; margin-bottom:5px;">Variable Output, Zero CO2</p>
+                <input type="number" id="solar-input" class="control-input" value="30" min="0" max="50">
+                <small>Max Capacity: 50 MW</small>
+            </div>
+            
+            <div class="component-card component-wind">
+                <i class="fas fa-wind" style="color: var(--wind-blue);"></i>
+                <h3>Wind Farm</h3>
+                <p style="color: var(--wind-blue); font-size:0.9em; margin-bottom:5px;">Variable Output, Zero CO2</p>
+                <input type="number" id="wind-input" class="control-input" value="30" min="0" max="50">
+                <small>Max Capacity: 50 MW</small>
+            </div>
+        </div>
+        
+        <div class="action-log-area">
+            <div id="game-message" style="color: var(--accent-green);">Welcome! Set your energy outputs and press Next Turn.</div>
+            <button id="next-turn-button">Next Turn <i class="fas fa-arrow-circle-right"></i></button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Game Constants and State ---
+        const MAX_TURNS = 10;
+        let turn = 0;
+        let budget = 10.0; // Million $
+        let totalCarbon = 0; // Tonnes CO2
+
+        // Cost and Carbon Multipliers (per MW supplied)
+        const MULTIPLIERS = {
+            fossil: { cost: 0.05, carbon: 0.8, max: 100 },
+            solar: { cost: 0.01, carbon: 0.0, max: 50 },
+            wind: { cost: 0.02, carbon: 0.0, max: 50 }
+        };
+
+        // --- DOM Elements ---
+        const demandStat = document.getElementById('demand-stat');
+        const carbonStat = document.getElementById('carbon-stat');
+        const budgetStat = document.getElementById('budget-stat');
+        const turnStat = document.getElementById('turn-stat');
+        const fossilInput = document.getElementById('fossil-input');
+        const solarInput = document.getElementById('solar-input');
+        const windInput = document.getElementById('wind-input');
+        const nextTurnButton = document.getElementById('next-turn-button');
+        const gameMessage = document.getElementById('game-message');
+
+        // --- Utility Functions ---
+
+        function generateDemand() {
+            // Demand is random but generally increasing slightly over turns
+            const baseDemand = 100 + (turn * 5);
+            const variation = Math.floor(Math.random() * 30) - 15; // +/- 15 MW
+            return Math.max(80, baseDemand + variation);
+        }
+
+        function calculateOutput(inputMW, type) {
+            inputMW = parseInt(inputMW) || 0;
+            // Fossil is stable
+            if (type === 'fossil') {
+                return inputMW;
+            }
+            
+            // Renewable output is variable (50% to 100% efficiency)
+            const efficiency = 0.5 + Math.random() * 0.5; 
+            return Math.round(inputMW * efficiency);
+        }
+        
+        function cleanInputValues() {
+            fossilInput.value = Math.max(0, Math.min(MULTIPLIERS.fossil.max, parseInt(fossilInput.value) || 0));
+            solarInput.value = Math.max(0, Math.min(MULTIPLIERS.solar.max, parseInt(solarInput.value) || 0));
+            windInput.value = Math.max(0, Math.min(MULTIPLIERS.wind.max, parseInt(windInput.value) || 0));
+        }
+
+        function updateDashboard() {
+            carbonStat.textContent = totalCarbon.toFixed(1);
+            budgetStat.textContent = budget.toFixed(2);
+            turnStat.textContent = `${turn} / ${MAX_TURNS}`;
+
+            // Update status color based on budget health
+            budgetStat.style.color = budget < 3.0 ? var(--fossil-red) : var(--solar-yellow);
+        }
+
+        // --- Game Processing ---
+
+        function processTurn() {
+            cleanInputValues(); // Sanitize inputs first
+            if (turn >= MAX_TURNS) return;
+
+            // 1. Get User Input
+            const fossilAlloc = parseInt(fossilInput.value);
+            const solarAlloc = parseInt(solarInput.value);
+            const windAlloc = parseInt(windInput.value);
+            
+            // 2. Calculate Actual Output
+            const demand = generateDemand();
+            
+            const actualFossil = calculateOutput(fossilAlloc, 'fossil');
+            const actualSolar = calculateOutput(solarAlloc, 'solar');
+            const actualWind = calculateOutput(windAlloc, 'wind');
+            
+            const totalSupply = actualFossil + actualSolar + actualWind;
+
+            // 3. Calculate Metrics
+            let shortfall = Math.max(0, demand - totalSupply);
+            let totalCost = 0;
+            let carbonEmitted = 0;
+            
+            // Calculate cost and carbon for actual energy supplied
+            totalCost += actualFossil * MULTIPLIERS.fossil.cost;
+            totalCost += actualSolar * MULTIPLIERS.solar.cost;
+            totalCost += actualWind * MULTIPLIERS.wind.cost;
+            
+            carbonEmitted += actualFossil * MULTIPLIERS.fossil.carbon;
+
+            // Apply penalty for shortfall
+            if (shortfall > 0) {
+                totalCost += shortfall * 0.2; // Emergency power surcharge
+            }
+
+            // 4. Update Game State
+            turn++;
+            budget -= totalCost;
+            totalCarbon += carbonEmitted;
+            
+            demandStat.textContent = demand.toFixed(0);
+
+            // 5. Provide Feedback
+            if (shortfall > 0) {
+                gameMessage.style.color = var(--fossil-red);
+                gameMessage.textContent = `CRITICAL SHORTFALL! ${shortfall.toFixed(0)} MW unmet. Cost: $${totalCost.toFixed(2)}M. CO2: ${carbonEmitted.toFixed(1)}t.`;
+            } else {
+                gameMessage.style.color = var(--accent-green);
+                gameMessage.textContent = `Turn successful! Surplus: ${totalSupply - demand} MW. Cost: $${totalCost.toFixed(2)}M. CO2: ${carbonEmitted.toFixed(1)}t.`;
+            }
+            
+            // 6. Check Game Over Conditions
+            if (budget <= 0) {
+                return endGame("BANKRUPTCY! You ran out of funds.");
+            }
+
+            // 7. Advance Turn
+            updateDashboard();
+
+            if (turn > MAX_TURNS) {
+                endGame("GAME COMPLETE! See your final grid performance.");
+            }
+        }
+
+        function endGame(reason) {
+            nextTurnButton.disabled = true;
+            nextTurnButton.textContent = "Game Ended";
+            
+            let finalAssessment = "";
+
+            if (budget > 8.0 && totalCarbon < 50) {
+                finalAssessment = "CLEAN ENERGY CHAMPION! Excellent financial and environmental management.";
+                gameMessage.style.color = var(--accent-green);
+            } else if (totalCarbon < 100) {
+                finalAssessment = "ECO-FRIENDLY! Low emissions, strong effort towards sustainability.";
+                gameMessage.style.color = var(--solar-yellow);
+            } else {
+                finalAssessment = "HIGH POLLUTER! Needs massive renewable investment to meet climate goals.";
+                gameMessage.style.color = var(--fossil-red);
+            }
+
+            gameMessage.textContent = `${reason}. ${finalAssessment}`;
+            
+            alert(`${reason}\n\nFinal Score:\nBudget: $${budget.toFixed(2)}M\nTotal Carbon: ${totalCarbon.toFixed(1)} Tonnes\n\nAssessment: ${finalAssessment}`);
+
+            // Offer a restart option
+            nextTurnButton.textContent = "Restart Game";
+            nextTurnButton.disabled = false;
+            nextTurnButton.onclick = initializeGame;
+        }
+
+        function initializeGame() {
+            turn = 0;
+            budget = 10.0;
+            totalCarbon = 0;
+            
+            // Reset button action
+            nextTurnButton.onclick = processTurn;
+            nextTurnButton.textContent = "Next Turn";
+            nextTurnButton.disabled = false;
+            
+            fossilInput.value = 40;
+            solarInput.value = 30;
+            windInput.value = 30;
+            
+            gameMessage.textContent = "Welcome! Set your energy outputs and press Next Turn.";
+            updateDashboard();
+            // Process the first turn immediately to set initial demand
+            processTurn(); 
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', initializeGame);
+        
+        // Ensure input fields update the dashboard on change (for immediate feedback)
+        [fossilInput, solarInput, windInput].forEach(input => {
+            input.addEventListener('change', cleanInputValues);
+        });
+
+    </script>
+</body>
+</html>

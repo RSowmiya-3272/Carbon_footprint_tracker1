@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyCarbon – AI EcoBot</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+<style>
+:root {
+  --bg-dark: #0B132B;
+  --accent-green: #7DF9A0;
+  --text-light: #E0E0E0;
+  --card-bg: #1C2541;
+  --font-family: 'Inter', sans-serif;
+  --transition-speed: 0.3s;
+}
+
+/* --- Global --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-family); background: var(--bg-dark); color: var(--text-light); line-height:1.6; min-height:100vh; display:flex; flex-direction:column; }
+
+header {
+  background: var(--card-bg); padding:15px 5%; display:flex; justify-content:space-between; align-items:center;
+  box-shadow:0 4px 20px rgba(0,0,0,0.4); position:sticky; top:0; z-index:1000;
+}
+.logo { font-size:2rem; font-weight:800; color:var(--accent-green); text-shadow:0 0 8px rgba(125,249,160,0.8);}
+.nav-toggle { display:none; background:none; border:none; color:var(--accent-green); font-size:1.8rem; cursor:pointer; }
+nav a { color:var(--text-light); text-decoration:none; padding:10px 18px; margin:0 4px; border-radius:25px; transition: all var(--transition-speed); font-weight:600; }
+nav a:hover { background: rgba(125,249,160,0.15); color:var(--accent-green); transform: translateY(-2px);}
+nav a.active { background: var(--accent-green); color: var(--bg-dark); font-weight:700; animation: neonPulse 2s infinite ease-in-out; }
+
+@keyframes neonPulse { 0%{box-shadow:0 0 1px var(--accent-green);}50%{box-shadow:0 0 10px var(--accent-green),0 0 20px rgba(125,249,160,0.5);}100%{box-shadow:0 0 1px var(--accent-green);} }
+
+/* --- Container --- */
+.container { max-width:1200px; margin:0 auto; padding:30px 5%; flex:1; display:flex; justify-content:center; align-items:flex-start; }
+
+.chatbot-container {
+  width:100%; max-width:700px; display:flex; flex-direction:column; background:var(--card-bg);
+  border-radius:15px; box-shadow:0 0 30px rgba(0,0,0,0.7),0 0 10px rgba(125,249,160,0.2); overflow:hidden;
+}
+.chat-header { background:var(--bg-dark); padding:18px; color:var(--accent-green); font-size:1.3rem; font-weight:700; text-align:center; border-bottom:2px solid rgba(125,249,160,0.5); text-shadow:0 0 5px rgba(125,249,160,0.5);}
+.chat-window { flex:1; padding:20px; overflow-y:auto; scrollbar-width: thin; scrollbar-color: var(--accent-green) var(--card-bg); }
+.message { margin-bottom:15px; display:flex; flex-direction:column; animation: messageEntrance 0.4s ease-out; }
+.bot-message { align-items:flex-start;}
+.user-message { align-items:flex-end;}
+.message-bubble { max-width:85%; padding:12px 18px; border-radius:20px; line-height:1.4; transition: transform 0.2s; }
+.bot-message .message-bubble { background:var(--bg-dark); border:1px solid rgba(125,249,160,0.4); border-top-left-radius:5px; }
+.user-message .message-bubble { background:var(--accent-green); color:var(--bg-dark); font-weight:600; border-top-right-radius:5px; }
+
+/* --- Input --- */
+.chat-input { display:flex; gap:15px; padding:20px; border-top:1px solid rgba(125,249,160,0.2);}
+.chat-input input { flex:1; padding:14px; border-radius:25px; border:2px solid transparent; background:#080E1F; color:var(--text-light); box-shadow: inset 0 1px 5px rgba(0,0,0,0.5); transition:border-color 0.3s,box-shadow 0.3s;}
+.chat-input input:focus { border-color: var(--accent-green); box-shadow:0 0 10px rgba(125,249,160,0.7); outline:none; }
+.chat-input button { background:linear-gradient(45deg,var(--accent-green),#38c172); color:var(--bg-dark); border:none; padding:10px 25px; border-radius:25px; font-weight:700; cursor:pointer; box-shadow:0 4px 15px rgba(125,249,160,0.4); transition: transform 0.2s, opacity 0.3s; }
+.chat-input button:hover { transform:translateY(-2px); opacity:0.95; }
+
+.typing-indicator .message-bubble { display:flex; gap:5px; align-items:center; }
+.typing-indicator span { width:8px; height:8px; background:var(--accent-green); border-radius:50%; opacity:0; animation: typingPulse 1s infinite;}
+.typing-indicator span:nth-child(1) { animation-delay:0s; }
+.typing-indicator span:nth-child(2) { animation-delay:0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay:0.4s; }
+@keyframes typingPulse {0%{transform:scale(1);opacity:0.5;}50%{transform:scale(1.5);opacity:1;}100%{transform:scale(1);opacity:0.5;}}
+@keyframes messageEntrance { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+footer { text-align:center; padding:20px 5%; background:var(--card-bg); margin-top:50px; border-top:2px solid rgba(125,249,160,0.1); font-size:0.9rem; color:#A0A0A0; box-shadow:0 -5px 15px rgba(0,0,0,0.3); }
+
+/* --- Responsive --- */
+@media(max-width:768px){
+  .nav-toggle{display:block;}
+  nav{ display:none; position:absolute; top:60px; left:0; width:100%; flex-direction:column; background:var(--card-bg); transform:translateY(-100%); transition:transform 0.3s;}
+  nav.open{display:flex; transform:translateY(0);}
+  nav a{display:block; text-align:center; margin:5px 10px; padding:12px; border-radius:8px;}
+  .chatbot-container{min-height:80vh; margin:10px;}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">MyCarbon</div>
+  <button class="nav-toggle" id="nav-toggle"><i class="fas fa-bars"></i></button>
+  <nav id="main-nav">
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="calculator.html"><i class="fas fa-calculator"></i> Calculator</a>
+    <a href="news.html"><i class="fas fa-newspaper"></i> News</a>
+    <a href="chatbot.html" class="active"><i class="fas fa-robot"></i> Chatbot</a>
+    <a href="prevention.html"><i class="fas fa-shield-alt"></i> Prevention</a>
+    <a href="game.html"><i class="fas fa-gamepad"></i> Game</a>
+  </nav>
+</header>
+
+<main class="container">
+  <div class="chatbot-container">
+    <div class="chat-header">EcoBot 🤖 - Your AI Sustainability Assistant</div>
+    <div class="chat-window" id="chat-window">
+      <div class="message bot-message">
+        <div class="message-bubble">Hello! I'm EcoBot. Ask me about carbon footprints, electric cars, or ways to reduce your emissions 🌱</div>
+      </div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="chat-input-text" placeholder="Ask EcoBot a question...">
+      <button id="send-btn"><i class="fas fa-paper-plane"></i> Send</button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2025 MyCarbon Tracker. Earth-friendly design 🌳</p>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const navToggle = document.getElementById('nav-toggle');
+  const mainNav = document.getElementById('main-nav');
+  const sendBtn = document.getElementById('send-btn');
+  const chatInput = document.getElementById('chat-input-text');
+  const chatWindow = document.getElementById('chat-window');
+
+  navToggle.addEventListener('click',()=>{
+    mainNav.classList.toggle('open');
+    const icon = navToggle.querySelector('i');
+    icon.classList.toggle('fa-bars');
+    icon.classList.toggle('fa-times');
+  });
+
+  const newsDB=[
+    {keyword:'carbon capture',title:'Major Carbon Capture Project Greenlit',summary:'Govt invests $100M to capture 1M tonnes of CO2 annually.',link:'https://www.google.com/search?q=carbon+capture'},
+    {keyword:'electric cars',title:'EV Sales Hit Record High',summary:'Global EV sales exceeded forecasts due to incentives and cheaper batteries.',link:'https://www.google.com/search?q=electric+cars'}
+  ];
+
+  function appendMessage(text,sender,isNews=false){
+    const msg=document.createElement('div'); msg.classList.add('message',`${sender}-message`);
+    let bubble=`<div class="message-bubble">${text}</div>`;
+    if(isNews && sender==='bot'){
+      const news=newsDB.find(n=>text.includes(n.title));
+      if(news){
+        bubble=`<div class="message-bubble"><h4 style="color:var(--accent-green)">${news.title}</h4><p>${news.summary}</p><a href="${news.link}" target="_blank" style="color:var(--text-light);text-decoration:underline">Read More</a></div>`;
+      }
+    }
+    msg.innerHTML=bubble; chatWindow.appendChild(msg); chatWindow.scrollTop=chatWindow.scrollHeight;
+  }
+
+  function showTyping(){ 
+    const typing=document.createElement('div'); typing.classList.add('message','bot-message','typing-indicator'); typing.id='typing-indicator';
+    typing.innerHTML=`<div class="message-bubble"><span></span><span></span><span></span></div>`;
+    chatWindow.appendChild(typing); chatWindow.scrollTop=chatWindow.scrollHeight;
+  }
+  function hideTyping(){ const t=document.getElementById('typing-indicator'); if(t) t.remove(); }
+
+  function getResponse(msg){
+    const m=msg.toLowerCase();
+    const newsMatch=newsDB.find(n=>m.includes(n.keyword));
+    if(newsMatch) return {text:newsMatch.title,isNews:true};
+    if(m.includes('hello')||m.includes('hi')) return {text:"Hi! I'm EcoBot 🌱 Ask me about 'carbon capture', 'electric cars', or eco-tips!",isNews:false};
+    if(m.includes('footprint')||m.includes('co2')) return {text:"Carbon footprint is total greenhouse gas emissions caused by you or entity. Let's find ways to reduce it!",isNews:false};
+    if(m.includes('tip')||m.includes('reduce')) return {text:"Reduce impact: eat less meat, fly less, switch to renewable energy.",isNews:false};
+    return {text:"I'm learning! Ask me about 'carbon capture', 'electric cars', or eco-tips.",isNews:false};
+  }
+
+  function sendMessage(){
+    const text=chatInput.value.trim(); if(!text) return;
+    appendMessage(text,'user'); chatInput.value='';
+    showTyping();
+    const resp=getResponse(text);
+    setTimeout(()=>{hideTyping(); appendMessage(resp.text,'bot',resp.isNews);},1200);
+  }
+
+  sendBtn.addEventListener('click',sendMessage);
+  chatInput.addEventListener('keypress',e=>{if(e.key==='Enter') sendMessage();});
+});
+</script>
+</body>
+</html>

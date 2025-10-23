@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyCarbon – Carbon IQ Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* --- Global Variables --- */
+        :root {
+            --bg-dark: #0B132B;
+            --accent-green: #7DF9A0;
+            --text-light: #E0E0E0;
+            --card-bg: #1C2541;
+            --font-family: 'Inter', sans-serif;
+            --transition-speed: 0.3s;
+        }
+
+        /* --- Reset and Base Styles --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Quiz Container --- */
+        .quiz-container {
+            width: 90%;
+            max-width: 700px;
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* --- Header and Scoreboard --- */
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .quiz-header h1 {
+            color: var(--accent-green);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px rgba(125, 249, 160, 0.7);
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            background-color: var(--bg-dark);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .score-board span {
+            color: var(--accent-green);
+        }
+
+        /* --- Question Area --- */
+        #question-text {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 50px;
+        }
+
+        /* --- Answer Options --- */
+        #answer-buttons {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn-answer {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            border: 2px solid #384260;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-answer:hover:not([disabled]) {
+            border-color: var(--accent-green);
+            background-color: #2a3450;
+            transform: scale(1.01);
+        }
+
+        /* States for Correct/Incorrect Answers */
+        .btn-answer.correct {
+            background-color: #38c177; /* Brighter Green for correct */
+            color: var(--bg-dark);
+            border-color: #38c177;
+            font-weight: 700;
+        }
+        
+        .btn-answer.incorrect {
+            background-color: #e74c3c; /* Red for incorrect */
+            color: var(--text-light);
+            border-color: #e74c3c;
+            font-weight: 700;
+        }
+        
+        .btn-answer:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* --- Controls --- */
+        #next-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--accent-green);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            opacity: 0; /* Hidden initially */
+        }
+        
+        #next-button.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #next-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* --- Results Screen --- */
+        .results-card {
+            text-align: center;
+        }
+        .results-card h2 {
+            color: var(--accent-green);
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        .results-card p {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+        }
+        .results-card button {
+            background-color: var(--accent-green);
+            color: var(--bg-dark);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 600px) {
+            .quiz-container {
+                padding: 20px;
+                margin: 20px auto;
+            }
+            .quiz-header h1 {
+                font-size: 2rem;
+            }
+            #question-text {
+                font-size: 1.1rem;
+            }
+            .score-board {
+                padding: 10px 15px;
+            }
+            #answer-buttons {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1><i class="fas fa-brain"></i> Carbon IQ Challenge</h1>
+            <div class="score-board">
+                <div>Question: <span id="current-question-number">1</span> / <span id="total-questions">25</span></div>
+                <div>Score: <span id="current-score">0</span></div>
+            </div>
+        </div>
+
+        <div id="quiz-area">
+            <div id="question-text">
+                Loading Question...
+            </div>
+            
+            <div id="answer-buttons">
+                </div>
+            
+            <button id="next-button">Next Question <i class="fas fa-arrow-right"></i></button>
+        </div>
+        
+        <div id="results-area" class="results-card" style="display: none;">
+            </div>
+
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Which human activity is the single largest source of greenhouse gas emissions?",
+                answers: [
+                    { text: "Agriculture and Land Use", correct: false },
+                    { text: "Burning fossil fuels for electricity and heat", correct: true },
+                    { text: "Industrial Processes (Cement, Steel)", correct: false },
+                    { text: "Transportation", correct: false }
+                ]
+            },
+            {
+                question: "What is the primary greenhouse gas emitted by human activities?",
+                answers: [
+                    { text: "Methane ($CH_4$)", correct: false },
+                    { text: "Nitrous Oxide ($N_2O$)", correct: false },
+                    { text: "Carbon Dioxide ($CO_2$)", correct: true },
+                    { text: "Water Vapor ($H_2O$)", correct: false }
+                ]
+            },
+            {
+                question: "If you want to reduce your carbon footprint from diet, which category should you generally eat less of?",
+                answers: [
+                    { text: "Poultry and Eggs", correct: false },
+                    { text: "Fruits and Vegetables", correct: false },
+                    { text: "Beef and Lamb", correct: true },
+                    { text: "Grains and Cereals", correct: false }
+                ]
+            },
+            {
+                question: "What does 'phantom load' refer to in home energy consumption?",
+                answers: [
+                    { text: "Energy used by appliances plugged in but turned off", correct: true },
+                    { text: "Energy lost through poor insulation", correct: false },
+                    { text: "The initial surge of power when an appliance turns on", correct: false },
+                    { text: "Energy used by kitchen lights", correct: false }
+                ]
+            },
+            {
+                question: "Which mode of transport typically has the HIGHEST carbon footprint per passenger-mile?",
+                answers: [
+                    { text: "Train (Intercity)", correct: false },
+                    { text: "Passenger Car (Average)", correct: false },
+                    { text: "Domestic Flight", correct: true },
+                    { text: "Bus (Coach)", correct: false }
+                ]
+            },
+            {
+                question: "Which renewable energy source contributes the largest share of global electricity generation?",
+                answers: [
+                    { text: "Solar Power", correct: false },
+                    { text: "Wind Power", correct: false },
+                    { text: "Hydropower", correct: true },
+                    { text: "Geothermal", correct: false }
+                ]
+            },
+            {
+                question: "Deforestation is a major contributor to climate change primarily because:",
+                answers: [
+                    { text: "It reduces the amount of $CO_2$ absorbed from the atmosphere", correct: true },
+                    { text: "It causes soil erosion", correct: false },
+                    { text: "It increases local temperatures", correct: false },
+                    { text: "It increases methane release", correct: false }
+                ]
+            },
+            {
+                question: "Which of these is the most effective way to reduce the embodied carbon of your clothing?",
+                answers: [
+                    { text: "Buying fast fashion items made from recycled materials", correct: false },
+                    { text: "Washing clothes in cold water", correct: false },
+                    { text: "Buying fewer clothes and keeping them longer", correct: true },
+                    { text: "Using a high-efficiency dryer", correct: false }
+                ]
+            },
+            {
+                question: "What percentage of the world's freshwater is used for agriculture?",
+                answers: [
+                    { text: "Around 30%", correct: false },
+                    { text: "Around 70%", correct: true },
+                    { text: "Around 50%", correct: false },
+                    { text: "Around 10%", correct: false }
+                ]
+            },
+            {
+                question: "The term 'Net Zero' means:",
+                answers: [
+                    { text: "Eliminating all greenhouse gas emissions immediately", correct: false },
+                    { text: "Balancing emissions produced with emissions taken out of the atmosphere", correct: true },
+                    { text: "Only using renewable energy sources", correct: false },
+                    { text: "Switching to electric vehicles only", correct: false }
+                ]
+            },
+            // --- Questions 11-25 (More concise questions for volume) ---
+            {
+                question: "Which gas has a much higher Global Warming Potential (GWP) than $CO_2$?",
+                answers: [
+                    { text: "Oxygen ($O_2$)", correct: false },
+                    { text: "Methane ($CH_4$)", correct: true },
+                    { text: "Nitrogen ($N_2$)", correct: false },
+                    { text: "Argon (Ar)", correct: false }
+                ]
+            },
+            {
+                question: "In the home, where is the most heat typically lost?",
+                answers: [
+                    { text: "Through doors and windows", correct: false },
+                    { text: "Through the roof", correct: true },
+                    { text: "Through the floor", correct: false },
+                    { text: "Through vents", correct: false }
+                ]
+            },
+            {
+                question: "What is the primary benefit of composting food waste?",
+                answers: [
+                    { text: "It creates fertilizer for gardening", correct: false },
+                    { text: "It prevents methane production in landfills", correct: true },
+                    { text: "It reduces water usage", correct: false },
+                    { text: "It saves money on garbage fees", correct: false }
+                ]
+            },
+            {
+                question: "What does IPCC stand for?",
+                answers: [
+                    { text: "International Pollution Control Committee", correct: false },
+                    { text: "Intergovernmental Panel on Climate Change", correct: true },
+                    { text: "Industrial Power and Coal Commission", correct: false },
+                    { text: "Institute of Planetary Climate Cycles", correct: false }
+                ]
+            },
+            {
+                question: "Which of these cooking methods has the lowest carbon footprint?",
+                answers: [
+                    { text: "Using an electric oven", correct: false },
+                    { text: "Microwaving", correct: true },
+                    { text: "Using a gas stove", correct: false },
+                    { text: "Using an induction hob", correct: false }
+                ]
+            },
+            {
+                question: "The Paris Agreement aims to limit global warming below how many degrees Celsius?",
+                answers: [
+                    { text: "$1.0^{\circ}C$", correct: false },
+                    { text: "$2.0^{\circ}C$", correct: true },
+                    { text: "$3.0^{\circ}C$", correct: false },
+                    { text: "$4.0^{\circ}C$", correct: false }
+                ]
+            },
+            {
+                question: "Switching from incandescent bulbs to LEDs saves energy because:",
+                answers: [
+                    { text: "LEDs use less voltage", correct: false },
+                    { text: "LEDs generate less waste heat", correct: true },
+                    { text: "LEDs run on DC power", correct: false },
+                    { text: "LEDs are smaller", correct: false }
+                ]
+            },
+            {
+                question: "Which material takes the longest to decompose in a landfill?",
+                answers: [
+                    { text: "Aluminum can", correct: false },
+                    { text: "Plastic bottle", correct: true },
+                    { text: "Newspaper", correct: false },
+                    { text: "Cotton T-shirt", correct: false }
+                ]
+            },
+            {
+                question: "The 'Greenhouse Effect' refers to:",
+                answers: [
+                    { text: "Warming caused by $O_2$ in the atmosphere", correct: false },
+                    { text: "Warming caused by gases trapping heat in the atmosphere", correct: true },
+                    { text: "The cooling effect of plant transpiration", correct: false },
+                    { text: "Natural climate variations", correct: false }
+                ]
+            },
+            {
+                question: "What is the largest energy consumer in the average US home?",
+                answers: [
+                    { text: "Lighting and appliances", correct: false },
+                    { text: "Heating and cooling", correct: true },
+                    { text: "Water heating", correct: false },
+                    { text: "Electronics and computers", correct: false }
+                ]
+            },
+            {
+                question: "Which country currently has the largest installed capacity for offshore wind power?",
+                answers: [
+                    { text: "Germany", correct: false },
+                    { text: "United Kingdom", correct: false },
+                    { text: "China", correct: true },
+                    { text: "USA", correct: false }
+                ]
+            },
+            {
+                question: "What is the primary environmental drawback of large-scale solar farms?",
+                answers: [
+                    { text: "They cause excessive noise pollution", correct: false },
+                    { text: "They require significant land use and habitat disruption", correct: true },
+                    { text: "They emit greenhouse gases during operation", correct: false },
+                    { text: "They rely heavily on rare earth metals", correct: false }
+                ]
+            },
+            {
+                question: "The term 'embodied energy' refers to:",
+                answers: [
+                    { text: "Energy used during the life of a product", correct: false },
+                    { text: "Energy used in manufacturing, transportation, and disposal of a product", correct: true },
+                    { text: "Energy stored in raw materials", correct: false },
+                    { text: "Energy saved by recycling", correct: false }
+                ]
+            },
+            {
+                question: "Which type of packaging is generally considered the most carbon-intensive to produce?",
+                answers: [
+                    { text: "Glass", correct: false },
+                    { text: "Aluminum", correct: true },
+                    { text: "Cardboard", correct: false },
+                    { text: "PET plastic", correct: false }
+                ]
+            },
+            {
+                question: "Buying food that is 'locally sourced' primarily reduces the footprint related to:",
+                answers: [
+                    { text: "Farm equipment fuel", correct: false },
+                    { text: "Transportation distance (food miles)", correct: true },
+                    { text: "Pesticide use", correct: false },
+                    { text: "Packaging materials", correct: false }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const totalQuestions = questions.length;
+        let answerSelected = false; // Flag to check if an answer has been clicked
+
+        const questionText = document.getElementById('question-text');
+        const answerButtonsContainer = document.getElementById('answer-buttons');
+        const nextButton = document.getElementById('next-button');
+        const currentQuestionNumberSpan = document.getElementById('current-question-number');
+        const totalQuestionsSpan = document.getElementById('total-questions');
+        const currentScoreSpan = document.getElementById('current-score');
+        const quizArea = document.getElementById('quiz-area');
+        const resultsArea = document.getElementById('results-area');
+
+        // Initialize the game
+        totalQuestionsSpan.textContent = totalQuestions;
+
+        // --- Core Game Functions ---
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            quizArea.style.display = 'block';
+            resultsArea.style.display = 'none';
+            nextButton.classList.remove('show');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            // Update the question counter
+            currentQuestionNumberSpan.textContent = currentQuestionIndex + 1;
+            answerSelected = false;
+
+            // Get the current question object
+            const currentQuestion = questions[currentQuestionIndex];
+            questionText.textContent = currentQuestion.question;
+
+            // Clear previous answers
+            answerButtonsContainer.innerHTML = '';
+            nextButton.classList.remove('show');
+
+            // Create buttons for each answer
+            currentQuestion.answers.forEach(answer => {
+                const button = document.createElement('button');
+                button.textContent = answer.text;
+                button.classList.add('btn-answer');
+                
+                // Store the correct status on the button element itself
+                if (answer.correct) {
+                    button.dataset.correct = true;
+                }
+                
+                button.addEventListener('click', selectAnswer);
+                answerButtonsContainer.appendChild(button);
+            });
+        }
+
+        function selectAnswer(e) {
+            if (answerSelected) return; // Prevent multiple clicks
+
+            const selectedButton = e.target;
+            const isCorrect = selectedButton.dataset.correct === "true";
+
+            // Mark the selected answer
+            answerSelected = true;
+            
+            if (isCorrect) {
+                selectedButton.classList.add('correct');
+                score++;
+            } else {
+                selectedButton.classList.add('incorrect');
+            }
+
+            // Disable all buttons and show the correct answer
+            Array.from(answerButtonsContainer.children).forEach(button => {
+                if (button.dataset.correct === "true") {
+                    button.classList.add('correct');
+                }
+                button.disabled = true;
+            });
+
+            // Update score display
+            currentScoreSpan.textContent = score;
+
+            // Show the next button
+            nextButton.classList.add('show');
+        }
+
+        function handleNextButton() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < totalQuestions) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function getScoreMessage(finalScore) {
+            const percentage = (finalScore / totalQuestions) * 100;
+            
+            if (percentage >= 90) {
+                return { title: "Eco-Genius! 🌍🏆", message: "Your knowledge is phenomenal! You're ready to lead the charge against climate change." };
+            } else if (percentage >= 70) {
+                return { title: "Eco-Expert! 🌱💡", message: "Excellent work! You have a strong grasp of climate facts and solutions." };
+            } else if (percentage >= 50) {
+                return { title: "Eco-Aware! 🌟", message: "Good effort! You know the basics—keep learning and tracking your footprint." };
+            } else {
+                return { title: "Eco-Trainee! 🤔", message: "Keep practicing! Knowledge is the first step to reducing your impact." };
+            }
+        }
+
+        function showResults() {
+            quizArea.style.display = 'none';
+            resultsArea.style.display = 'block';
+
+            const scoreData = getScoreMessage(score);
+            
+            resultsArea.innerHTML = `
+                <h2>${scoreData.title}</h2>
+                <p>${scoreData.message}</p>
+                <p>You scored **${score}** out of ${totalQuestions}!</p>
+                <button onclick="startQuiz()">Play Again</button>
+            `;
+        }
+        
+        // --- Event Listeners ---
+        nextButton.addEventListener('click', handleNextButton);
+
+        // --- Start the quiz when the page loads ---
+        startQuiz();
+
+    </script>
+</body>
+</html>

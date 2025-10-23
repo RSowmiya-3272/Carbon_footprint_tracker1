@@ -1,0 +1,114 @@
+/*
+ * news.css
+ * This file contains layout and enhanced visual styles for the News/Article Grid.
+ * It depends on a globally linked styles.css for variables, base fonts, and responsiveness.
+ */
+
+/* Grid Layout and Spacing */
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px; 
+    padding-bottom: 50px;
+}
+
+/* Base Card Structure - Overrides global .card padding */
+.news-card {
+    padding: 0;
+    overflow: hidden;
+    text-align: left;
+    /* Reset transform from global styles for clean hover start */
+    transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+}
+
+/* Enhanced Hover Animation: Lift and subtle green shadow */
+.news-card:hover {
+    transform: translateY(-8px); /* Higher lift than default card */
+    box-shadow: 0 15px 40px rgba(125, 249, 160, 0.35); /* Stronger green glow */
+}
+
+/* Image/Icon Placeholder Section */
+.news-card-image {
+    width: 100%;
+    height: 200px;
+    /* Create a deep space background using the theme colors */
+    background: linear-gradient(135deg, var(--bg-dark) 50%, #15203A 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem; /* Larger icon */
+    color: var(--accent-green);
+    transition: all 0.4s ease-out;
+}
+
+/* Icon Animation on Card Hover */
+.news-card:hover .news-card-image i {
+    transform: scale(1.1) rotate(5deg);
+    text-shadow: 0 0 10px rgba(125, 249, 160, 0.8);
+    color: #fff;
+}
+
+/* Content Area */
+.news-card-content {
+    padding: 25px; /* Slightly more padding */
+    border-top: 1px solid rgba(125, 249, 160, 0.1); /* Subtle separator line */
+}
+
+.news-card-content h3 {
+    font-size: 1.4rem;
+    color: var(--text-light);
+    margin-bottom: 10px;
+    transition: color 0.3s;
+}
+
+/* Title Highlight on Hover */
+.news-card:hover .news-card-content h3 {
+    color: var(--accent-green);
+}
+
+.news-card-content p {
+    font-size: 0.95rem;
+    color: #A0A0A0;
+    margin-bottom: 20px;
+}
+
+/* 'Read Article' Link Animation */
+.news-card-content a {
+    display: inline-block;
+    color: var(--accent-green);
+    text-decoration: none;
+    font-weight: 700;
+    position: relative;
+}
+
+.news-card-content a::after {
+    content: '>>'; /* Futuristic indicator */
+    position: absolute;
+    opacity: 0;
+    right: -15px;
+    transition: right 0.3s, opacity 0.3s;
+}
+
+.news-card-content a:hover {
+    color: #fff;
+    padding-right: 15px; /* Make space for the animated arrow */
+}
+
+.news-card-content a:hover::after {
+    opacity: 1;
+    right: 0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .news-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .news-card:hover {
+        transform: translateY(-3px); /* Reduce lift on mobile */
+    }
+    .news-card-image {
+        height: 150px;
+    }
+}

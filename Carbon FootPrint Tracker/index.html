@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyCarbon – What is a Carbon Footprint?</title>
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* ==========================================================
+           GLOBAL VARIABLES (LIGHT + DARK THEME)
+        ========================================================== */
+        :root {
+            /* Default (Dark) */
+            --bg-color: #0B132B;
+            --text-color: #E0E0E0;
+            --card-bg: #1C2541;
+            --accent-color: #7DF9A0;
+            --fossil-red: #e74c3c;
+            --foot-green: #4CAF50;
+            --foot-blue: #2196F3;
+            --outline-black: #000000;
+            --transition-speed: 0.35s;
+        }
+
+        /* Light Theme */
+        [data-theme="light"] {
+            --bg-color: #F5F7FA;
+            --text-color: #222;
+            --card-bg: #FFFFFF;
+            --accent-color: #007A5E;
+            --fossil-red: #C0392B;
+            --foot-green: #2E8B57;
+            --foot-blue: #2980B9;
+            --outline-black: #333;
+        }
+
+        /* ==========================================================
+           BASE STYLES
+        ========================================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        /* ==========================================================
+           HEADER
+        ========================================================== */
+        header {
+            background-color: var(--card-bg);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            transition: background-color var(--transition-speed);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-color);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all var(--transition-speed);
+        }
+
+        nav a:hover {
+            background-color: rgba(125, 249, 160, 0.15);
+            color: var(--accent-color);
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-size: 1.7rem;
+            cursor: pointer;
+        }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--accent-color);
+            border-radius: 50%;
+            color: var(--accent-color);
+            font-size: 1.3rem;
+            padding: 6px;
+            margin-left: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+        }
+
+        /* ==========================================================
+           HERO SECTION
+        ========================================================== */
+        .hero-section {
+            text-align: center;
+            padding: 70px 5% 40px;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .hero-section p {
+            color: #A0A0A0;
+            font-size: 1.2rem;
+        }
+
+        /* ==========================================================
+           PROBLEM STATEMENT SECTION
+        ========================================================== */
+        .problem-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+            transition: background-color var(--transition-speed);
+        }
+
+        .problem-card h2 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .problem-card p {
+            color: var(--text-color);
+            font-size: 1.05rem;
+        }
+
+        /* ==========================================================
+           CARD & CONTENT
+        ========================================================== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: background-color var(--transition-speed);
+        }
+
+        h2, h3 { color: var(--accent-color); }
+
+        p, li { color: var(--text-color); }
+
+        /* ==========================================================
+           FOOTPRINT VISUAL
+        ========================================================== */
+        .foot-viz-section {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 50px;
+            margin: 50px 0;
+        }
+
+        .footprint-wrapper {
+            position: relative;
+            width: 250px;
+            height: 400px;
+        }
+
+        .toe-viz {
+            position: absolute;
+            border: 4px solid var(--outline-black);
+            border-radius: 50%;
+            background: linear-gradient(135deg, #A0A0A0 0%, var(--foot-green) 100%);
+        }
+
+        .toe-viz:nth-child(1) { width: 70px; height: 70px; top: 0; left: 10px; }
+        .toe-viz:nth-child(2) { width: 55px; height: 55px; top: 10px; left: 75px; }
+        .toe-viz:nth-child(3) { width: 50px; height: 50px; top: 20px; left: 120px; }
+        .toe-viz:nth-child(4) { width: 45px; height: 45px; top: 30px; left: 160px; }
+        .toe-viz:nth-child(5) { width: 40px; height: 40px; top: 40px; left: 190px; }
+
+        .sole-viz {
+            position: absolute;
+            width: 200px;
+            height: 330px;
+            top: 60px;
+            left: 30px;
+            background: linear-gradient(to bottom right, var(--foot-blue), var(--foot-green));
+            border: 4px solid var(--outline-black);
+            border-radius: 90px 90px 60px 70px;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7);
+        }
+
+        .magnifier-viz {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            top: 150px;
+            left: 70px;
+            border-radius: 50%;
+            background-color: var(--text-color);
+            border: 6px solid var(--outline-black);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: rotate(30deg);
+            animation: pulseGlow 4s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(125, 249, 160, 0.4); }
+            50% { box-shadow: 0 0 15px 3px rgba(125, 249, 160, 0.6); }
+        }
+
+        .co2-text {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--fossil-red);
+        }
+
+        /* ==========================================================
+           ADVANTAGES & CHALLENGES GRID
+        ========================================================== */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-card li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 10px;
+        }
+
+        .info-card li i {
+            position: absolute;
+            left: 0;
+            top: 3px;
+        }
+
+        .list-advantage i { color: var(--accent-color); }
+        .list-disadvantage i { color: var(--fossil-red); }
+
+        /* ==========================================================
+           FOOTER
+        ========================================================== */
+        footer {
+            text-align: center;
+            padding: 20px 5%;
+            background-color: var(--card-bg);
+            border-top: 2px solid rgba(125, 249, 160, 0.1);
+            color: var(--text-color);
+            margin-top: 40px;
+        }
+
+        /* ==========================================================
+           RESPONSIVE STYLES
+        ========================================================== */
+        @media (max-width: 900px) {
+            .nav-toggle { display: block; }
+
+            nav {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                right: 0;
+                width: 100%;
+                background-color: var(--card-bg);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+            }
+
+            nav.open { display: flex; }
+
+            nav a {
+                display: block;
+                text-align: center;
+                padding: 15px 0;
+                border-bottom: 1px solid rgba(125, 249, 160, 0.1);
+            }
+
+            .footprint-wrapper { transform: scale(0.8); }
+        }
+
+        @media (max-width: 600px) {
+            .hero-section h1 { font-size: 2.2rem; }
+            .footprint-wrapper { transform: scale(0.7); }
+            .card { padding: 20px; }
+        }
+    </style>
+</head>
+
+<body data-theme="dark">
+    <!-- ============================= HEADER ============================= -->
+    <header>
+        <div class="logo">MyCarbon</div>
+
+        <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <nav id="main-nav">
+            <a href="index.html"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="calculator.html"><i class="fas fa-calculator"></i> Calculator</a>
+            <a href="news.html"><i class="fas fa-newspaper"></i> News</a>
+            <a href="chatbot.html"><i class="fas fa-robot"></i> Chatbot</a>
+            <a href="prevention.html"><i class="fas fa-shield-alt"></i> Prevention</a>
+            <a href="game.html"><i class="fas fa-gamepad"></i> Game</a>
+        </nav>
+
+        <button class="theme-toggle" id="theme-toggle" title="Toggle dark/light mode">
+            <i class="fas fa-moon"></i>
+        </button>
+    </header>
+
+    <!-- ============================= MAIN ============================= -->
+    <main class="container">
+        <section class="hero-section">
+            <h1>What is a Carbon Footprint? 📖</h1>
+            <p>Understanding the impact of human activities on our planet.</p>
+        </section>
+
+        <!-- Problem Statement Section -->
+        <div class="problem-card">
+            <h2><i class="fas fa-exclamation-circle"></i> Problem Statement</h2>
+            <p>
+                Climate change is accelerating due to excessive greenhouse gas emissions from human activities.
+                However, most individuals and organizations are unaware of their exact environmental impact.
+                <strong>MyCarbon</strong> addresses this gap by helping users understand and visualize their carbon footprint,
+                empowering them to make informed decisions that reduce emissions and promote sustainability.
+            </p>
+        </div>
+
+        <!-- Definition -->
+        <div class="card info-card">
+            <h2><i class="fas fa-book-open"></i> Definition</h2>
+            <p>
+                A <strong>Carbon Footprint</strong> is the total amount of greenhouse gases (GHGs) emitted directly or indirectly by human activities, products, or organizations, measured in equivalent tonnes of carbon dioxide (<strong>CO₂e</strong>).
+            </p>
+            <p>
+                It helps assess how our energy use, travel, diet, and consumption contribute to climate change.
+            </p>
+        </div>
+
+        <!-- Footprint Visualization -->
+        <div class="foot-viz-section">
+            <div class="footprint-wrapper">
+                <div class="toe-viz"></div>
+                <div class="toe-viz"></div>
+                <div class="toe-viz"></div>
+                <div class="toe-viz"></div>
+                <div class="toe-viz"></div>
+                <div class="sole-viz"></div>
+                <div class="magnifier-viz"><span class="co2-text">CO₂</span></div>
+            </div>
+
+            <div style="max-width: 500px;">
+                <h2><i class="fas fa-chart-pie"></i> Main Sources of Emissions</h2>
+                <ul style="list-style-type: disc; margin-left: 20px;">
+                    <li><strong>Energy:</strong> Electricity generation (coal, gas) for homes and industries.</li>
+                    <li><strong>Transportation:</strong> Use of fossil fuels in vehicles and aircraft.</li>
+                    <li><strong>Food:</strong> Livestock farming and fertilizer emissions (methane and nitrous oxide).</li>
+                    <li><strong>Consumption:</strong> Production and disposal of manufactured goods.</li>
+                    <li><strong>Waste:</strong> Methane (CH₄) released from landfills.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Advantages and Challenges -->
+        <div class="content-grid">
+            <div class="card info-card">
+                <h3><i class="fas fa-check-circle"></i> Advantages of Tracking</h3>
+                <ul class="list-advantage">
+                    <li><i class="fas fa-plus"></i> Awareness of environmental impact.</li>
+                    <li><i class="fas fa-plus"></i> Cost savings through efficient resource use.</li>
+                    <li><i class="fas fa-plus"></i> Healthier lifestyle choices.</li>
+                    <li><i class="fas fa-plus"></i> Supports climate action goals.</li>
+                </ul>
+            </div>
+
+            <div class="card info-card">
+                <h3><i class="fas fa-times-circle"></i> Challenges & Limitations</h3>
+                <ul class="list-disadvantage">
+                    <li><i class="fas fa-minus"></i> Complex and difficult to measure accurately.</li>
+                    <li><i class="fas fa-minus"></i> Shifts focus from corporate responsibility.</li>
+                    <li><i class="fas fa-minus"></i> Requires reliable data collection.</li>
+                    <li><i class="fas fa-minus"></i> Often excludes government-scale emissions.</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================= FOOTER ============================= -->
+    <footer>
+        <p>&copy; 2025 MyCarbon Tracker. Knowledge is the first step to mitigation 🌳</p>
+    </footer>
+
+    <!-- ============================= JAVASCRIPT ============================= -->
+    <script>
+        // Mobile nav toggle
+        const navToggle = document.getElementById('nav-toggle');
+        const mainNav = document.getElementById('main-nav');
+        navToggle.addEventListener('click', () => {
+            mainNav.classList.toggle('open');
+            const icon = navToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+    </script>
+</body>
+</html>
